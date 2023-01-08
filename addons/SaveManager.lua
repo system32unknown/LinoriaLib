@@ -189,7 +189,6 @@ local SaveManager = {} do
 		end
 	end
 
-
 	function SaveManager:BuildConfigSection(tab)
 		assert(self.Library, 'Must set SaveManager.Library')
 

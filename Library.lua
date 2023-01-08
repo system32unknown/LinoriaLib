@@ -29,10 +29,10 @@ local Library = {
     HudRegistry = {};
 
     FontColor = Color3.fromRGB(255, 255, 255);
-    MainColor = Color3.fromRGB(28, 28, 28);
-    BackgroundColor = Color3.fromRGB(20, 20, 20);
-    AccentColor = Color3.fromRGB(0, 85, 255);
-    OutlineColor = Color3.fromRGB(50, 50, 50);
+    MainColor = Color3.fromRGB(0, 0, 0);
+    BackgroundColor = Color3.fromRGB(0, 0, 0);
+    AccentColor = Color3.fromRGB(0, 255, 255);
+    OutlineColor = Color3.fromRGB(48, 48, 48);
 
     Black = Color3.new(0, 0, 0);
     Font = Enum.Font.Code,
@@ -290,7 +290,7 @@ function Library:UpdateColorsUsingRegistry()
 
     -- The above would be especially efficient for a rainbow menu color or live color-changing.
 
-    for Idx, Object in next, Library.Registry do
+    for _, Object in next, Library.Registry do
         for Property, ColorIdx in next, Object.Properties do
             if type(ColorIdx) == 'string' then
                 Object.Instance[Property] = Library[ColorIdx];
@@ -313,7 +313,7 @@ function Library:Unload()
         Connection:Disconnect()
     end
 
-     -- Call our unload callback, maybe to undo some hooks etc
+    -- Call our unload callback, maybe to undo some hooks etc
     if Library.OnUnload then
         Library.OnUnload()
     end
@@ -342,6 +342,7 @@ do
 
         local ColorPicker = {
             Value = Info.Default;
+            Transparency = Info.Transparency or 1;
             Type = 'ColorPicker';
             Title = type(Info.Title) == 'string' and Info.Title or 'Color picker',
         };
@@ -353,6 +354,14 @@ do
             ColorPicker.Sat = S;
             ColorPicker.Vib = V;
         end;
+
+        local CheckerFrame = Library:Create('ImageLabel', {
+            BorderSizePixel = 0;
+            Size = UDim2.new(0, 27, 0, 13);
+            ZIndex = 5;
+            Image = 'rbxassetid://4887440500';
+            Parent = DisplayFrame;
+        });
 
         ColorPicker:SetHSVFromRGB(ColorPicker.Value);
 
@@ -378,7 +387,7 @@ do
             BackgroundColor3 = Color3.new(1, 1, 1);
             BorderColor3 = Color3.new(0, 0, 0);
             Position = UDim2.new(0, 4, 0, 20 + RelativeOffset + 1);
-            Size = UDim2.new(1, -13, 0, 253);
+            Size = UDim2.new(1, -13, 0, 271);
             Visible = false;
             ZIndex = 15;
             Parent = Container.Parent;
@@ -499,12 +508,38 @@ do
             TextColor3 = Library.FontColor,
         })
 
+        local TransparencyBoxOuter = Library:Create('Frame', {
+            BorderColor3 = Color3.new(0, 0, 0);
+            Position = UDim2.fromOffset(4, 251),
+            Size = UDim2.new(1, -8, 0, 15),
+            ZIndex = 19,
+            Parent = PickerFrameInner;
+        });
+
+        local TransparencyBoxInner = Library:Create('Frame', {
+            BackgroundColor3 = Color3.new(1, 1, 1);
+            BorderColor3 = Library.OutlineColor;
+            BorderMode = Enum.BorderMode.Inset;
+            Size = UDim2.new(1, 0, 1, 0);
+            ZIndex = 19,
+            Parent = TransparencyBoxOuter;
+        });
+
+        local Transparency = Library:Create('UIGradient', {
+            Color = ColorSequence.new({
+                ColorSequenceKeypoint.new(0, Color3.new(0, 0, 0)),
+                ColorSequenceKeypoint.new(1, Color3.fromRGB(212, 212, 212))
+            });
+            Rotation = 0;
+            Parent = TransparencyBoxInner;
+        });
+
         local DisplayLabel = Library:CreateLabel({
             Size = UDim2.new(1, 0, 0, 14);
             Position = UDim2.fromOffset(5, 5);
             TextXAlignment = Enum.TextXAlignment.Left;
             TextSize = 14;
-            Text = ColorPicker.Title,--Info.Default;
+            Text = ColorPicker.Title, --Info.Default;
             TextWrapped = false;
             ZIndex = 16;
             Parent = PickerFrameInner;
@@ -651,6 +686,23 @@ do
                 else
                     ColorPicker:Show();
                 end;
+            end;
+        end);
+
+        TransparencyBoxInner.InputBegan:Connect(function(Input)
+            if Input.UserInputType == Enum.UserInputType.MouseButton1 then
+                while InputService:IsMouseButtonPressed(Enum.UserInputType.MouseButton1) do
+                    local MinX = TransparencyBoxInner.AbsolutePosition.X;
+                    local MaxX = MinX + TransparencyBoxInner.AbsoluteSize.X;
+                    local MouseX = math.clamp(Mouse.X, MinX, MaxX);
+
+                    ColorPicker.Transparency = ((MouseX - MinX) / (MaxX - MinX));
+
+                    ColorPicker:Display();
+
+                    RenderStepped:Wait();
+                end;
+                Library:AttemptSave();
             end;
         end);
 
@@ -943,8 +995,8 @@ do
             end;
         end);
 
-        Library:GiveSignal(InputService.InputBegan:Connect(function(Input)
-            if (not Picking) then
+        Library:GiveSignal(InputService.InputBegan:Connect(function(Input, Processed)
+            if not Picking and not Processed then
                 if KeyPicker.Mode == 'Toggle' then
                     local Key = KeyPicker.Value;
 
@@ -990,7 +1042,7 @@ do
     end;
 
     BaseAddons.__index = Funcs;
-    BaseAddons.__namecall = function(Table, Key, ...)
+    BaseAddons.__namecall = function(_, Key, ...)
         return Funcs[Key](...);
     end;
 end;
@@ -1056,7 +1108,7 @@ do
             Groupbox:Resize();
         end
 
-        if (not DoesWrap) then
+        if not DoesWrap then
             setmetatable(Label, BaseAddons);
         end
 
@@ -1877,7 +1929,7 @@ do
             local Str = '';
 
             if Info.Multi then
-                for Idx, Value in next, Values do
+                for _, Value in next, Values do
                     if Dropdown.Value[Value] then
                         Str = Str .. Value .. ', ';
                     end;
@@ -1895,7 +1947,7 @@ do
             if Info.Multi then
                 local T = {};
 
-                for Value, Bool in next, Dropdown.Value do
+                for Value, _ in next, Dropdown.Value do
                     table.insert(T, Value);
                 end;
 
@@ -1911,7 +1963,6 @@ do
 
             for _, Element in next, Scrolling:GetChildren() do
                 if not Element:IsA('UIListLayout') then
-                    -- Library:RemoveFromRegistry(Element);
                     Element:Destroy();
                 end;
             end;
@@ -1949,8 +2000,8 @@ do
                 });
 
                 Library:OnHighlight(Button, Button,
-                    { BorderColor3 = 'AccentColor', ZIndex = 24 },
-                    { BorderColor3 = 'OutlineColor', ZIndex = 23 }
+                    {BorderColor3 = 'AccentColor', ZIndex = 24},
+                    {BorderColor3 = 'OutlineColor', ZIndex = 23}
                 );
 
                 local Selected;
@@ -1976,7 +2027,7 @@ do
                     if Input.UserInputType == Enum.UserInputType.MouseButton1 then
                         local Try = not Selected;
 
-                        if Dropdown:GetActiveValues() == 1 and (not Try) and (not Info.AllowNull) then
+                        if Dropdown:GetActiveValues() == 1 and not Try and not Info.AllowNull then
                         else
                             if Info.Multi then
                                 Selected = Try;
@@ -2021,8 +2072,6 @@ do
             local Y = math.clamp(Count * 20, 0, MAX_DROPDOWN_ITEMS * 20) + 1;
             ListOuter.Size = UDim2.new(1, -8, 0, Y);
             Scrolling.CanvasSize = UDim2.new(0, 0, 0, (Count * 20) + 1);
-
-            -- ListOuter.Size = UDim2.new(1, -8, 0, (#Values * 20) + 2);
         end;
 
         function Dropdown:OpenDropdown()
@@ -2046,7 +2095,7 @@ do
             if Dropdown.Multi then
                 local nTable = {};
 
-                for Value, Bool in next, Val do
+                for Value, _ in next, Val do
                     if table.find(Dropdown.Values, Value) then
                         nTable[Value] = true
                     end;
@@ -2063,7 +2112,7 @@ do
 
             Dropdown:SetValues();
             Dropdown:Display();
-            
+
             if Dropdown.Changed then Dropdown.Changed(Dropdown.Value) end
         end;
 
@@ -2119,7 +2168,7 @@ do
                     Dropdown.Value = Dropdown.Values[Index];
                 end
 
-                if (not Info.Multi) then break end
+                if not Info.Multi then break end
             end
 
             Dropdown:SetValues();
@@ -2135,7 +2184,7 @@ do
     end;
 
     BaseGroupbox.__index = Funcs;
-    BaseGroupbox.__namecall = function(Table, Key, ...)
+    BaseGroupbox.__namecall = function(_, Key, ...)
         return Funcs[Key](...);
     end;
 end;
@@ -2218,8 +2267,6 @@ do
     Library.Watermark = WatermarkOuter;
     Library.WatermarkText = WatermarkLabel;
     Library:MakeDraggable(Library.Watermark);
-
-
 
     local KeybindOuter = Library:Create('Frame', {
         AnchorPoint = Vector2.new(0, 0.5);
@@ -2932,9 +2979,6 @@ function Library:CreateWindow(...)
         Outer.Visible = not Outer.Visible;
         ModalElement.Modal = Outer.Visible;
 
-        local oIcon = Mouse.Icon;
-        local State = InputService.MouseIconEnabled;
-
         local Cursor = Drawing.new('Triangle');
         Cursor.Thickness = 1;
         Cursor.Filled = true;
@@ -2956,6 +3000,7 @@ function Library:CreateWindow(...)
     end
 
     Library:GiveSignal(InputService.InputBegan:Connect(function(Input, Processed)
+        if Processed then return end
         if type(Library.ToggleKeybind) == 'table' and Library.ToggleKeybind.Type == 'KeyPicker' then
             if Input.UserInputType == Enum.UserInputType.Keyboard and Input.KeyCode.Name == Library.ToggleKeybind.Value then
                 task.spawn(Library.Toggle)

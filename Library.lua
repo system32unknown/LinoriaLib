@@ -1,9 +1,7 @@
 local InputService = game:GetService('UserInputService');
 local TextService = game:GetService('TextService');
-local TweenService = game:GetService('TweenService');
 local CoreGui = game:GetService('CoreGui');
 local RunService = game:GetService('RunService')
-local GuiService = game:GetService('GuiService')
 local RenderStepped = RunService.RenderStepped;
 local LocalPlayer = game:GetService('Players').LocalPlayer;
 local Mouse = LocalPlayer:GetMouse();
@@ -355,7 +353,7 @@ do
             ColorPicker.Vib = V;
         end;
 
-        local CheckerFrame = Library:Create('ImageLabel', {
+        Library:Create('ImageLabel', {
             BorderSizePixel = 0;
             Size = UDim2.new(0, 27, 0, 13);
             ZIndex = 5;
@@ -452,9 +450,6 @@ do
             Parent = HueSelectorOuter;
         });
 
-        local HueTextSize = Library:GetTextBounds('Hex color', Library.Font, 16) + 3
-        local RgbTextSize = Library:GetTextBounds('255, 255, 255', Library.Font, 16) + 3
-
         local HueBoxOuter = Library:Create('Frame', {
             BorderColor3 = Color3.new(0, 0, 0);
             Position = UDim2.fromOffset(4, 228),
@@ -535,7 +530,7 @@ do
             Parent = TransparencyBoxInner;
         });
 
-        local DisplayLabel = Library:CreateLabel({
+        Library:CreateLabel({
             Size = UDim2.new(1, 0, 0, 14);
             Position = UDim2.fromOffset(5, 5);
             TextXAlignment = Enum.TextXAlignment.Left;
@@ -545,7 +540,6 @@ do
             ZIndex = 16;
             Parent = PickerFrameInner;
         });
-
 
         Library:AddToRegistry(PickerFrameInner, { BackgroundColor3 = 'BackgroundColor'; BorderColor3 = 'OutlineColor'; });
         Library:AddToRegistry(Highlight, { BackgroundColor3 = 'AccentColor'; });
@@ -562,7 +556,7 @@ do
             table.insert(SequenceTable, ColorSequenceKeypoint.new(Hue, Color3.fromHSV(Hue, 1, 1)));
         end;
 
-        local HueSelectorGradient = Library:Create('UIGradient', {
+        Library:Create('UIGradient', {
             Color = ColorSequence.new(SequenceTable);
             Rotation = 90;
             Parent = HueSelectorInner;
@@ -583,7 +577,7 @@ do
             if enter then
                 local r, g, b = RgbBox.Text:match('(%d+),%s*(%d+),%s*(%d+)')
                 if r and g and b then
-                    ColorPicker.Hue, ColorPicker.Sat, ColorPicker.Vib = Color3.toHSV(Color3.fromRGB(r, g, b))
+                    ColorPicker.Hue, ColorPicker.Sat, ColorPicker.Vib = Color3.fromHSV(Color3.fromRGB(r, g, b))
                 end
             end
 
@@ -613,7 +607,7 @@ do
         end;
 
         function ColorPicker:Show()
-            for Frame, Val in next, Library.OpenedFrames do
+            for Frame, _ in next, Library.OpenedFrames do
                 if Frame.Name == 'Color' then
                     Frame.Visible = false;
                     Library.OpenedFrames[Frame] = nil;
@@ -825,7 +819,7 @@ do
         local Modes = Info.Modes or { 'Always', 'Toggle', 'Hold' };
         local ModeButtons = {};
 
-        for Idx, Mode in next, Modes do
+        for _, Mode in next, Modes do
             local ModeButton = {};
 
             local Label = Library:CreateLabel({
@@ -928,7 +922,6 @@ do
             KeyPicker.Clicked = Callback
         end
 
-
         if ParentObj.Addons then
             table.insert(ParentObj.Addons, KeyPicker)
         end
@@ -1030,7 +1023,7 @@ do
         end))
 
         Library:GiveSignal(InputService.InputEnded:Connect(function(Input)
-            if (not Picking) then
+            if not Picking then
                 KeyPicker:Update();
             end;
         end))
@@ -1159,7 +1152,7 @@ do
             Parent = ButtonInner;
         });
 
-        local ButtonLabel = Library:CreateLabel({
+        Library:CreateLabel({
             Size = UDim2.new(1, 0, 1, 0);
             TextSize = 14;
             Text = Text;
@@ -1291,7 +1284,7 @@ do
         local Groupbox = self;
         local Container = Groupbox.Container;
 
-        local InputLabel = Library:CreateLabel({
+        Library:CreateLabel({
             Size = UDim2.new(1, 0, 0, 15);
             TextSize = 14;
             Text = Info.Text;
@@ -1714,7 +1707,6 @@ do
                 return math.floor(Value);
             end;
 
-    
             return tonumber(string.format('%.' .. Slider.Rounding .. 'f', Value))
         end;
 
@@ -1725,7 +1717,7 @@ do
         function Slider:SetValue(Str)
             local Num = tonumber(Str);
 
-            if (not Num) then
+            if not Num then
                 return;
             end;
 
@@ -1791,7 +1783,7 @@ do
         local RelativeOffset = 0;
 
         if not Info.Compact then
-            local DropdownLabel = Library:CreateLabel({
+            Library:CreateLabel({
                 Size = UDim2.new(1, 0, 0, 10);
                 TextSize = 14;
                 Text = Info.Text;
@@ -1970,7 +1962,7 @@ do
 
             local Count = 0;
 
-            for Idx, Value in next, Values do
+            for _, Value in next, Values do
                 local Table = {};
 
                 Count = Count + 1;
@@ -2104,7 +2096,7 @@ do
 
                 Dropdown.Value = nTable;
             else
-                if (not Val) then
+                if not Val then
                     Dropdown.Value = nil;
                 elseif table.find(Dropdown.Values, Val) then
                     Dropdown.Value = Val;
@@ -2305,7 +2297,7 @@ do
         BackgroundColor3 = 'AccentColor';
     }, true);
 
-    local KeybindLabel = Library:CreateLabel({
+    Library:CreateLabel({
         Size = UDim2.new(1, 0, 0, 20);
         Position = UDim2.fromOffset(5, 2),
         TextXAlignment = Enum.TextXAlignment.Left,
@@ -2406,7 +2398,7 @@ function Library:Notify(Text, Time)
         end
     });
 
-    local NotifyLabel = Library:CreateLabel({
+    Library:CreateLabel({
         Position = UDim2.new(0, 4, 0, 0);
         Size = UDim2.new(1, -4, 1, 0);
         Text = Text;
@@ -2586,7 +2578,7 @@ function Library:CreateWindow(...)
             BorderColor3 = 'OutlineColor';
         });
 
-        local TabButtonLabel = Library:CreateLabel({
+        Library:CreateLabel({
             Position = UDim2.new(0, 0, 0, 0);
             Size = UDim2.new(1, 0, 1, -1);
             Text = Name;
@@ -3013,7 +3005,7 @@ function Library:CreateWindow(...)
         if Input:IsModifierKeyDown(Enum.ModifierKey.Ctrl) and Outer.Visible then
             local HoveringColorPicker = nil
 
-            for i, colorPicker in next, Options do
+            for _, colorPicker in next, Options do
                 if colorPicker.Type == 'ColorPicker' then
                     local displayFrame = colorPicker.DisplayFrame
                     local tabFrame = displayFrame and displayFrame:findFirstAncestor('TabFrame')
@@ -3025,9 +3017,7 @@ function Library:CreateWindow(...)
                 end
             end
 
-            if not HoveringColorPicker then
-                return
-            end
+            if not HoveringColorPicker then return end
 
             if Input.KeyCode == Enum.KeyCode.C then
                 Library.ColorClipboard = HoveringColorPicker.Value

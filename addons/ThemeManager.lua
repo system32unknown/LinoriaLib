@@ -105,7 +105,7 @@ local ThemeManager = {} do
 
 		groupbox:AddButton('Load custom theme', function() 
 			self:ApplyTheme(Options.ThemeManager_CustomThemeList.Value) 
-		end })
+		end)
 
 		groupbox:AddButton('Save custom theme', function() 
 			self:SaveCustomTheme(Options.ThemeManager_CustomThemeName.Value)
@@ -113,13 +113,13 @@ local ThemeManager = {} do
 			Options.ThemeManager_CustomThemeList.Values = self:ReloadCustomThemes()
 			Options.ThemeManager_CustomThemeList:SetValues()
 			Options.ThemeManager_CustomThemeList:SetValue(nil)
-		end })
+		end)
 
 		groupbox:AddButton('Refresh list', function()
 			Options.ThemeManager_CustomThemeList.Values = self:ReloadCustomThemes()
 			Options.ThemeManager_CustomThemeList:SetValues()
 			Options.ThemeManager_CustomThemeList:SetValue(nil)
-		end })
+		end)
 
 		groupbox:AddButton('Set as default', function()
 			if Options.ThemeManager_CustomThemeList.Value ~= nil and Options.ThemeManager_CustomThemeList.Value ~= '' then

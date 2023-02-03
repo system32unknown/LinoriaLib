@@ -857,7 +857,7 @@ do
             Mode = Info.Mode or 'Toggle'; -- Always, Toggle, Hold
             Type = 'KeyPicker';
             Callback = Info.Callback or function(Value) end;
-            ChangedCallback = Info.Callback or function(New) end;
+            ChangedCallback = Info.ChangedCallback or function(New) end;
 
             SyncToggleState = Info.SyncToggleState or false;
         };

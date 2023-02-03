@@ -1110,7 +1110,7 @@ do
                     Break = true;
                     Picking = false;
 
-                    KeyPicker.ChangedCallback(Input.KeyCode or Input.UserInputType)
+                    Library:SafeCallback(KeyPicker.ChangedCallback, Input.KeyCode or Input.UserInputType)
                     DisplayLabel.Text = Key;
                     KeyPicker.Value = Key;
 

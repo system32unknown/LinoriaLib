@@ -415,8 +415,8 @@ do
             Name = 'Color';
             BackgroundColor3 = Color3.new(1, 1, 1);
             BorderColor3 = Color3.new(0, 0, 0);
-            Position = UDim2.new(0, 4, 0, 20 + RelativeOffset + 1);
-            Size = UDim2.new(1, -13, 0, 253);
+            Position = UDim2.fromOffset(DisplayFrame.AbsolutePosition.X, DisplayFrame.AbsolutePosition.Y + 18),
+            Size = UDim2.fromOffset(230, 253);
             Visible = false;
             ZIndex = 15;
             Parent = ScreenGui,

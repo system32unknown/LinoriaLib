@@ -372,8 +372,6 @@ do
 
     function Funcs:AddColorPicker(Idx, Info)
         local ToggleLabel = self.TextLabel;
-        -- local Container = self.Container;
-
         local ColorPicker = {
             Value = Info.Default;
             Transparency = Info.Transparency or 1;
@@ -414,7 +412,6 @@ do
         -- Rewrote this to be placed inside the Library ScreenGui
         -- There was some issue which caused RelativeOffset to be way off
         -- Thus the color picker would never show
-
         local PickerFrameOuter = Library:Create('Frame', {
             Name = 'Color';
             BackgroundColor3 = Color3.new(1, 1, 1);
@@ -573,12 +570,11 @@ do
             Position = UDim2.fromOffset(5, 5);
             TextXAlignment = Enum.TextXAlignment.Left;
             TextSize = 14;
-            Text = ColorPicker.Title, --Info.Default;
+            Text = ColorPicker.Title,
             TextWrapped = false;
             ZIndex = 16;
             Parent = PickerFrameInner;
         });
-
 
         Library:AddToRegistry(PickerFrameInner, { BackgroundColor3 = 'BackgroundColor'; BorderColor3 = 'OutlineColor'; });
         Library:AddToRegistry(Highlight, { BackgroundColor3 = 'AccentColor'; });

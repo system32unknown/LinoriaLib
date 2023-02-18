@@ -936,7 +936,7 @@ do
             for _, Label in next, Library.KeybindContainer:GetChildren() do
                 if Label:IsA('TextLabel') and Label.Visible then
                     YSize = YSize + 18;
-                    if (Label.TextBounds.X > XSize) then
+                    if Label.TextBounds.X > XSize then
                         XSize = Label.TextBounds.X
                     end
                 end;
@@ -1499,7 +1499,7 @@ do
             end;
 
             if Textbox.Numeric then
-                if (not tonumber(Text)) and Text:len() > 0 then
+                if not tonumber(Text) and Text:len() > 0 then
                     Text = Textbox.Value
                 end
             end

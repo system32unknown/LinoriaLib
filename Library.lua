@@ -381,7 +381,7 @@ do
         };
 
         function ColorPicker:SetHSVFromRGB(Color)
-            local H, S, V = Color3.fromHSV(Color);
+            local H, S, V = Color:toHsv()
 
             ColorPicker.Hue = H;
             ColorPicker.Sat = S;

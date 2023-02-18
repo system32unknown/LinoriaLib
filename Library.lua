@@ -271,8 +271,8 @@ function Library:GetTextBounds(Text, Font, Size, Resolution)
     return Bounds.X, Bounds.Y
 end;
 
-function Library:GetDarkerColor(Color)
-    local H, S, V = Color3.toHSV(Color);
+function Library:GetDarkerColor(Color:Color3)
+    local H, S, V = Color:ToHSV();
     return Color3.fromHSV(H, S, V / 1.5);
 end;
 Library.AccentColorDark = Library:GetDarkerColor(Library.AccentColor);
@@ -600,7 +600,7 @@ do
             if enter then
                 local success, result = pcall(Color3.fromHex, HueBox.Text)
                 if success and typeof(result) == 'Color3' then
-                    ColorPicker.Hue, ColorPicker.Sat, ColorPicker.Vib = Color3.toHSV(result)
+                    ColorPicker.Hue, ColorPicker.Sat, ColorPicker.Vib = result:ToHSV()
                 end
             end
 

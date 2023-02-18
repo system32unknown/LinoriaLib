@@ -401,6 +401,7 @@ do
 
         local DisplayFrame = Library:Create('Frame', {
             BackgroundColor3 = ColorPicker.Value;
+            BackgroundTransparency = 1 - ColorPicker.Transparency;
             BorderColor3 = Library:GetDarkerColor(ColorPicker.Value);
             BorderMode = Enum.BorderMode.Inset;
             Size = UDim2.new(0, 28, 0, 14);
@@ -417,7 +418,7 @@ do
             BackgroundColor3 = Color3.new(1, 1, 1);
             BorderColor3 = Color3.new(0, 0, 0);
             Position = UDim2.fromOffset(DisplayFrame.AbsolutePosition.X, DisplayFrame.AbsolutePosition.Y + 18),
-            Size = UDim2.fromOffset(230, 253);
+            Size = UDim2.fromOffset(230, 271);
             Visible = false;
             ZIndex = 15;
             Parent = ScreenGui,

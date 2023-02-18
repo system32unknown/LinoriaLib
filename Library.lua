@@ -381,7 +381,7 @@ do
         };
 
         function ColorPicker:SetHSVFromRGB(Color)
-            local H, S, V = Color3.toHSV(Color);
+            local H, S, V = Color3.fromHSV(Color);
 
             ColorPicker.Hue = H;
             ColorPicker.Sat = S;
@@ -400,7 +400,6 @@ do
 
         local DisplayFrame = Library:Create('Frame', {
             BackgroundColor3 = ColorPicker.Value;
-            BackgroundTransparency = 1 - ColorPicker.Transparency;
             BorderColor3 = Library:GetDarkerColor(ColorPicker.Value);
             BorderMode = Enum.BorderMode.Inset;
             Size = UDim2.new(0, 28, 0, 14);
@@ -556,7 +555,7 @@ do
             Parent = TransparencyBoxOuter;
         });
 
-        local Transparency = Library:Create('UIGradient', {
+        Library:Create('UIGradient', {
             Color = ColorSequence.new({
                 ColorSequenceKeypoint.new(0, Color3.new(0, 0, 0)),
                 ColorSequenceKeypoint.new(1, Color3.fromRGB(212, 212, 212))
@@ -625,6 +624,7 @@ do
 
             Library:Create(DisplayFrame, {
                 BackgroundColor3 = ColorPicker.Value;
+                BackgroundTransparency = 1 - ColorPicker.Transparency;
                 BorderColor3 = Library:GetDarkerColor(ColorPicker.Value);
             });
 
@@ -755,7 +755,6 @@ do
                     ContextMenu:Hide()
                 end
             end;
-
 
             if Input.UserInputType == Enum.UserInputType.MouseButton2 and ContextMenu.Container.Visible then
                 if not Library:IsMouseOverFrame(ContextMenu.Container) and not Library:IsMouseOverFrame(DisplayFrame) then

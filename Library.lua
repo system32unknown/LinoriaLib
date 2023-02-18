@@ -380,8 +380,8 @@ do
             Callback = Info.Callback or function(Color) end;
         };
 
-        function ColorPicker:SetHSVFromRGB(Color)
-            local H, S, V = Color:toHsv()
+        function ColorPicker:SetHSVFromRGB(Color:Color3)
+            local H, S, V = Color:ToHSV()
 
             ColorPicker.Hue = H;
             ColorPicker.Sat = S;
